@@ -1,0 +1,26 @@
+.box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  width: 100vw;
+  
+}
+
+.borderForm{
+  box-shadow: 5px 5px 15px #ccc;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 100px;
+  
+}
+
+.view-password{
+  background-color: transparent;
+  border: none;
+}
+
+.password{
+  display: flex;
+}
