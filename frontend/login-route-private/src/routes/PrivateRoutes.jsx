@@ -4,9 +4,9 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import { Dashboard } from '../page/Dashboard/index'
 import { Login } from '../components/Login/Login'
 import { ListaUsuarios } from '../page/Usuarios/ListaUsuarios'
+import { UsuariosForm } from '../page/UsuariosForm/UsuariosForm';
 
 import { Context } from '../Context/AuthContext'
-
 
 function CustomRoute({isPrivate, ...rest}){
   const { authenticated} = useContext(Context)
@@ -25,7 +25,9 @@ export default function PrivateRoute(){
     <Switch>
       <CustomRoute exact path="/" component={Login}/>
       <CustomRoute isPrivate path="/dashboard" component={Dashboard}/>
-      <CustomRoute isPrivate path="/usuarios" component={ListaUsuarios}/>
+      <CustomRoute isPrivate path="/usuarios/novo" component={UsuariosForm} />
+      <CustomRoute isPrivate path="/usuarios/editar/:id" component={UsuariosForm} />
+      <CustomRoute isPrivate path="/usuarios" component={ListaUsuarios} />
     </Switch>
     
   )

@@ -1,82 +1,159 @@
-import React, {useState, useEffect} from 'react'
-import { Link } from 'react-router-dom'
-import api from '../../services/api';
-import { Table, Container } from 'react-bootstrap'
+import React, { useEffect, useState, useContext } from "react";
+import { Link } from 'react-router-dom';
+import api from "../../services/api";
+import { Context } from "../../Context/AuthContext";
+import { Table, Container, Button, Alert } from 'react-bootstrap';
+import { NavBar } from '../../components/UI/NavBar/NavBar'
+import './styles.css'
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+import { useHistory } from 'react-router-dom';
+
 
 export const ListaUsuarios = () =>{
+    const { authenticated, handleLogout} = useContext(Context);
+    const history = useHistory();
 
-  const [data, setData] = useState([]);
-  const [status, setStatus] = useState({
-    type:'',
-    mensagem: ''
-  });
+    const [data, setData] = useState([]);
 
-  const getUsers = async () =>{
-    const headers = {
-      'headers': {
-        'Authorization' : 'Bearer ' +  localStorage.getItem('token')
-      }
+    const [status, setStatus] = useState({
+        type:'',
+        mensagem:'',
+        loading: true
+    });
+
+    const confirmDelete = (user) => {
+    
+        confirmAlert({
+          title: "Excluir Usuários",
+          message:
+            "Deseja Excluir o usuário " +
+            user.name +
+            "?",
+          buttons: [
+            {
+              label: "Sim",
+              onClick: () => handleDelete(user.id)
+            },
+            {
+              label: "Não",
+              onClick: () => history.push('/dashboard')
+            }
+          ]
+        });
+      };
+
+    const handleDelete = async (idUser) =>{
+        const headers = {
+            'headers': {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+
+            },
+        }          
+        await api.delete("/user/"+idUser, headers)
+        .then((response) =>{
+            setStatus({
+                type:'success',
+                mensagem: response.data.mensagem,
+                loading:true
+            })
+            getUsers();
+
+        }).catch((err) =>{
+            if(err.response){
+                setStatus({
+                    type:'error',
+                    mensagem: err.response.data.mensagem
+                })
+            } else {
+                setStatus({
+                    type:'error',
+                    mensagem: 'Erro: Tente mais tarde!'
+                })
+            }
+        })        
     }
-    await api.get("/users", headers)
-    .then((response)=>{
-        setData(response.data.users)
-    }).catch((error)=>{
-      if(error.response){
-        setStatus({
-          type:'error',
-          mensagem: error.response.data.mensagem
+
+
+    const getUsers = async () =>{
+
+        const headers = {
+            'headers': {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+
+            },
+        }   
+        
+        await api.get("/users", headers)
+        .then((response) =>{
+            setData(response.data.users);
+            setStatus({loading:false})
+        }).catch((err) =>{
+            if(err.response){
+                setStatus({
+                    type:'error',
+                    mensagem: err.response.data.mensagem
+                })
+            } else {
+                setStatus({
+                    type:'error',
+                    mensagem: 'Erro: Tente mais tarde!'
+                })
+            }
         })
-      }else{
-          setStatus({
-            type:'error',
-            mensagem: 'Erro: tente mais tarde'
-          })
-      }
-    })
-  }
+    }
 
-  useEffect(()=>{
-    getUsers()
-  },[])
-
-  return(
-    <>
-      <Container>
-        <ul>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-          <li>
-            <Link to="/usuarios">Usuários</Link>
-          </li>
-          
-            
-        </ul>
-
-      <h1>Lista Usuários</h1>
-      <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Email</th>
-        </tr>
-      </thead>
-      <tbody>
-      {data.map(user => (
-        <tr key={user.id}>
-          <td>{user.id}</td>
-          <td>{user.name}</td>
-          <td>{user.email}</td>
-        </tr>        
+    useEffect( () =>{
+        getUsers();
+    }, [])
 
 
-      ))}
-      </tbody>
-      </Table>  
-      </Container>  
-    </>
+    return(
+        <>
+            <NavBar />                    
+            <Container>
+            {status.loading ? <Alert variant="warning">Carregando...</Alert> : ""}
+            <div className="btnNovo">
+            <h1>Usuários</h1>
+            <Button variant="outline-success">
+                <Link className="noLink" to="/usuarios/novo">Novo Usuário</Link>
+            </Button>
+            </div>
+            <Table striped bordered hover>  
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>E-mail</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {(!status.loading &&
+                data.map(user =>(
+                    <tr key={user.id}>
+                        <td>{user.id}</td>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td className="spaceFlex">
+                        <Button variant="outline-warning">
+                            <Link className="noLink " to={"/usuarios/editar/"+user.id}>Editar</Link>
+                        </Button>
+                        <Button variant="outline-danger" onClick={() => confirmDelete(user)}>
+                            Excluir
+                        </Button>
+                        </td>
+                    </tr>
+                ))
 
-  )
+            )}
+            </tbody>
+            </Table>            
+        </Container>
+        </>
+    )
 }
- 
+
+
+
+

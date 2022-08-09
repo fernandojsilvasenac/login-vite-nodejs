@@ -1,0 +1,15 @@
+.noLink{
+    text-decoration: none;
+}
+.spaceFlex {
+    display: flex;
+    justify-content: space-around;
+}
+.btnNovo {
+    padding:10px 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.labelConfirm{
+    font-weight: bold;
+}

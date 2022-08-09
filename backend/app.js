@@ -24,7 +24,7 @@ app.get("/users", validaToken, async (req, res) => {
 
     await User.findAll({
         attributes: ['id', 'name', 'email', 'password'],
-        order: [['id', 'DESC']]
+        order: [['id', 'ASC']]
     })
         .then((users) => {
             return res.json({
