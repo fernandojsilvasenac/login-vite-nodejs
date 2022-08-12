@@ -57,7 +57,7 @@ app.get("/user/:id", validaToken, async (req, res) => {
         });
 });
 
-app.post("/user", validaToken, async (req, res) => {
+app.post("/user", async (req, res) => {
     var dados = req.body;
     dados.password = await bcrypt.hash(dados.password, 8);
 

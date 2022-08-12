@@ -5,6 +5,7 @@ import { Dashboard } from '../page/Dashboard/index'
 import { Login } from '../components/Login/Login'
 import { ListaUsuarios } from '../page/Usuarios/ListaUsuarios'
 import { UsuariosForm } from '../page/UsuariosForm/UsuariosForm';
+import { ProdutosForm } from '../page/ProdutosForm/ProdutosForm';
 
 import { Context } from '../Context/AuthContext'
 
@@ -28,6 +29,7 @@ export default function PrivateRoute(){
       <CustomRoute isPrivate path="/usuarios/novo" component={UsuariosForm} />
       <CustomRoute isPrivate path="/usuarios/editar/:id" component={UsuariosForm} />
       <CustomRoute isPrivate path="/usuarios" component={ListaUsuarios} />
+      <CustomRoute path="/produtos/novo" component={ProdutosForm} />
     </Switch>
     
   )

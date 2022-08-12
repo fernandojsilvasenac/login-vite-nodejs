@@ -14,7 +14,8 @@ export const NavBar = () =>{
                 <Navbar.Brand href="/">Frontend System</Navbar.Brand>
                 <Nav className="me-auto">
                     <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-                    <Nav.Link href="/usuarios">Usuários</Nav.Link>
+                    {/* <Nav.Link href="/usuarios">Usuários</Nav.Link> */}
+                    <Nav.Link href="/produtos/novo">Produtos</Nav.Link>
                 </Nav>
                 <Form className="d-flex">
                     <Button variant="outline-warning" onClick={handleLogout}>Sair</Button>

@@ -30,7 +30,7 @@ function AuthProvider({children}){
         'Authorization' : 'Bearer ' + valueToken
       }
     }
-    await api.get("/validaToken", headers)
+    await api.get("/user/validatoken", headers)
     .then(()=>{
       return true
     }).catch(()=>{

@@ -84,7 +84,7 @@ export const ListaUsuarios = () =>{
             },
         }   
         
-        await api.get("/users", headers)
+        await api.get("/user/all", headers)
         .then((response) =>{
             setData(response.data.users);
             setStatus({loading:false})
