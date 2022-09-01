@@ -2,6 +2,12 @@ const express = require("express");
 var cors = require('cors');
 const app = express();
 
+/********* Trabalhar com arquivos FS file system ****************/
+const fs = require('fs');
+
+/***** Caminho de pasta Path ******/
+const path = require('path');
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -14,6 +20,9 @@ const Products = require('./models/Products');
 const router = require('./routes/index');
 
 app.use(express.json());
+
+// caminho para pasta de upload
+app.use('/files', express.static(path.resolve(__dirname, "public", "upload")))
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -28,23 +37,6 @@ app.get("/", function (request, response) {
 })
 
 app.use(router);
-
-
-// app.get("/validatoken", validaToken, async (req, res) => {
-//     await User.findByPk(req.userId, { attributes: ['id', 'name', 'email'] })
-//         .then((user) => {
-//             return res.json({
-//                 erro: false,
-//                 user
-//             });
-//         }).catch(() => {
-//             return res.status(400).json({
-//                 erro: true,
-//                 mensagem: "Erro: Necessário realizar o login para acessar a página!"
-//             });
-//         });
-
-// });
 
 app.listen(3032, () => {
     console.log("Servidor iniciado na porta 3032: http://localhost:3032");

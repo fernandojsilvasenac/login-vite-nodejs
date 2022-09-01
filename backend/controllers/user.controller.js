@@ -1,6 +1,9 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+/********* Trabalhar com arquivos FS file system ****************/
+const fs = require('fs');
+
 
 exports.findAll = async (req, res) => {
     await User.findAll({
@@ -142,7 +145,8 @@ exports.login = async (req, res) => {
     return res.json({
         erro: false,
         mensagem: "Login realizado com sucesso!",
-        token
+        token,
+        user: user.id
     });
 };
 
@@ -162,3 +166,80 @@ exports.validaToken = async (req, res) => {
         });
 
 };
+
+exports.editProfileImage = async (req, res) => {
+    if(req.file){
+        console.log(req.file);
+
+        await User.findByPk(req.userId)
+        .then( user =>{
+            console.log(user);
+            const imgOld = './public/upload/users/' + user.dataValues.image
+
+            fs.access(imgOld, (err) =>{
+                if(!err){
+                    fs.unlink(imgOld, () =>{})
+                }
+
+            })
+
+        }).catch( (err) =>{
+            return res.status(400).json({
+                erro: true,
+                mensagem: `Erro: Perfil do Usuário não encontrado! ${err}`
+            })
+        })
+
+
+        await User.update({image: req.file.filename}, 
+            {where: {id: req.userId}})
+        .then(() => {
+            return res.json({
+                erro: false,
+                mensagem: "Imagem do Usuário editada com sucesso!",
+                image: process.env.URL_IMG + '/files/users' + req.file.filename                
+            })
+        }).catch( () =>{
+            return res.status(400).json({
+                erro: true,
+                mensagem: `Erro: Imagem não editada...`,
+            })
+        })        
+
+        
+    } else {
+        return res.status(400).json({
+            erro: true,
+            mensagem: "Erro: Selecione uma imagem válida (.png, .jpg) !"
+        })
+    }
+}
+
+exports.viewProfile = async (req, res) => {    
+    const { id } = req.params;
+    try {
+        // await User.findAll({ where: {id: id}})
+        const users = await User.findByPk(id);
+        if(!users){
+            return res.status(400).json({
+                erro: true,
+                mensagem: "Erro: Nenhum Usuário encontrado!"
+            })
+        }
+        if(users.image){
+            var endImagem = process.env.URL_IMG + "/files/users/"+ users.image;
+        } else {
+            var endImagem = "";
+        }
+        res.status(200).json({
+            erro:false,
+            users,
+            endImagem
+        })
+    } catch (err){
+        res.status(400).json({
+            erro: true,
+            mensagem: `Erro: ${err}`
+        })
+    }
+}

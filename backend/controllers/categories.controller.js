@@ -4,12 +4,59 @@ const Categories = require('../models/Categories');
 exports.findAll = async (req, res) => {
     await Categories.findAll({
         attributes: ['id', 'name', 'description'],
-        order:[['name', 'ASC']]
+        order:[['id', 'ASC']]
     })
     .then( (categories) =>{
         return res.json({
             erro: false,
             categories
+        });
+    }).catch( (err) => {
+        return res.status(400).json({
+            erro: true,
+            mensagem: `Erro: ${err} ou Nenhuma Categoria encontrado!!!`
+        })
+    })
+}
+
+exports.findAllPages = async (req, res) => {
+    console.log(req.params);
+    
+    const {page = 1} = req.params;
+    const limit = 2;
+    let lastPage = 1;
+
+    const countCategories = await Categories.count();
+    console.log(countCategories);
+
+    if (countCategories === null) {
+        return res.status(400).json({
+            erro: true,
+            mensagem: "Error: Categorias não encontrada!!!"
+        })
+    } else{
+        lastPage = Math.ceil(countCategories / limit);
+        console.log(lastPage);
+    }
+    // Select id, name, description from Categories Limit 2 Offset 3
+    // Exemplo:
+    // pag 1 = 1,2
+    // pag 2 = 3,4
+    // pag 3 = 5,6
+
+    await Categories.findAll({
+        attributes: ['id', 'name', 'description'],
+        order:[['id', 'ASC']],
+        offset: Number((page * limit) - limit), // pag 3 * 2 = 6
+        limit: limit
+
+    })
+    .then( (categories) =>{
+        return res.json({
+            erro: false,
+            categories,
+            countCategories,
+            lastPage
         });
     }).catch( (err) => {
         return res.status(400).json({

@@ -3,6 +3,8 @@ const categories = require('../controllers/categories.controller');
 
 categoriesRoutes.get("/all", categories.findAll);
 
+categoriesRoutes.get("/all/pages/:page", categories.findAllPages);
+
 categoriesRoutes.get("/show/:id", categories.findOne);
 
 categoriesRoutes.post("/create", categories.create);
