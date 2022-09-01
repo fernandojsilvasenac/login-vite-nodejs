@@ -14,7 +14,7 @@ export const NavBar = () =>{
                 <Navbar.Brand href="/">Frontend System</Navbar.Brand>
                 <Nav className="me-auto">
                     <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-                    {/* <Nav.Link href="/usuarios">Usuários</Nav.Link> */}
+                    <Nav.Link href="/usuarios">Usuários</Nav.Link>
                     <Nav.Link href="/categories">Categorias</Nav.Link>
                     <Nav.Link href="/produtos/novo">Produtos</Nav.Link>
                 </Nav>

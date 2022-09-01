@@ -14,6 +14,10 @@ export const ListaUsuarios = () =>{
     const { authenticated, handleLogout} = useContext(Context);
     const history = useHistory();
 
+    const URL_IMG = 'http://localhost:3032';
+    const image = URL_IMG + '/files/users/';
+    const avatar = 'avatar-icon.png';
+
     const [data, setData] = useState([]);
 
     const [status, setStatus] = useState({
@@ -123,6 +127,7 @@ export const ListaUsuarios = () =>{
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Foto</th>
                     <th>Name</th>
                     <th>E-mail</th>
                     <th></th>
@@ -133,6 +138,17 @@ export const ListaUsuarios = () =>{
                 data.map(user =>(
                     <tr key={user.id}>
                         <td>{user.id}</td>
+                        <td>
+                            {user.image ? 
+                                (
+                                    <a href={image+user.image} target="_blank" rel="noopener noreferrer">
+                                        <img width='50' height='50' src={image+user.image}></img>
+                                    </a>
+                                ) : (
+                                    <img width='50' height='50' src={image+avatar}></img>
+                                )
+                            }
+                        </td>
                         <td>{user.name}</td>
                         <td>{user.email}</td>
                         <td className="spaceFlex">

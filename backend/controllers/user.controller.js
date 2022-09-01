@@ -7,7 +7,7 @@ const fs = require('fs');
 
 exports.findAll = async (req, res) => {
     await User.findAll({
-        attributes: ['id', 'name', 'email', 'password'],
+        attributes: ['id', 'name', 'email', 'password', 'image'],
         order: [['id', 'ASC']]
     })
         .then((users) => {
